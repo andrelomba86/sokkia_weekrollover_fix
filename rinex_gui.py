@@ -68,19 +68,13 @@ class RinexGUI:
         self.station_id_var = tk.StringVar(
             value=self.config_station_id)
 
-        # root.grid()
         main_frame = ttk.Frame(root, style='TFrame')
         main_frame.grid(row=0, column=0, sticky=tk.NSEW, padx=10, pady=10)
-        # Removido: main_frame.pack(side="top", fill="x")
 
         root.grid_columnconfigure(0, weight=1)
-        # main_frame.grid_columnconfigure(4, weight=1)
         main_frame.grid_columnconfigure(1, weight=2)
         main_frame.grid_columnconfigure(2, weight=4)
         main_frame.grid_columnconfigure(3, weight=1)
-        # main_frame.grid_columnconfigure(4, weight=1)
-        # main_frame.grid_columnconfigure(1, weight=3)
-        # main_frame.grid_columnconfigure(0, weight=1)
 
         ttk.Label(
             main_frame,

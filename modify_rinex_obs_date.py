@@ -7,6 +7,7 @@ import os
 import glob
 import zipfile
 
+
 def modify_rinex_observation_date(input_file, output_file, new_date_str):
     with open(input_file, 'r') as f:
         lines = f.readlines()
@@ -24,7 +25,8 @@ def modify_rinex_observation_date(input_file, output_file, new_date_str):
             parts = list(map(float, original_fields.split()))
             original_datetime = datetime(int(parts[0]), int(parts[1]), int(parts[2]),
                                          int(parts[3]), int(parts[4]), int(parts[5]))
-            updated_datetime = datetime.combine(new_date, original_datetime.time())
+            updated_datetime = datetime.combine(
+                new_date, original_datetime.time())
 
             new_line = f"{updated_datetime.year:>6}{updated_datetime.month:>6}{updated_datetime.day:>6}" \
                        f"{updated_datetime.hour:>6}{updated_datetime.minute:>6}{updated_datetime.second:13.7f}     GPS         {label}\n"
@@ -46,17 +48,19 @@ def modify_rinex_observation_date(input_file, output_file, new_date_str):
             continue
 
         if in_body and line.startswith(' '):
-            #match = re.match(r"\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d\.]+)", line)
+            # match = re.match(r"\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d\.]+)", line)
 
-            match = re.match(r"\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d\.]+)\s+(.+)", line)
+            match = re.match(
+                r"\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+([\d\.]+)\s+(.+)", line)
             if match:
                 y, mo, d, h, mi, s, sats = match.groups()
-                original_time = datetime(int(y), int(mo), int(d), int(h), int(mi), int(float(s)))
+                original_time = datetime(int(y), int(mo), int(
+                    d), int(h), int(mi), int(float(s)))
                 updated_time = datetime.combine(new_date, original_time.time())
 
                 updated_line = f"{updated_time.strftime('%y'):>3}{updated_time.strftime('%m'):>3}{updated_time.strftime('%d'):>3}" \
                     f"{h:>3}{mi:>3} {s:>10}  {sats}\n"
-                #f"{updated_time.hour:>4}{updated_time.minute:>6}{updated_time.second + updated_time.microsecond / 1e6:13.7f}" + line[43:]
+                # f"{updated_time.hour:>4}{updated_time.minute:>6}{updated_time.second + updated_time.microsecond / 1e6:13.7f}" + line[43:]
                 lines[i] = updated_line
 
     with open(output_file, 'w') as f:
@@ -64,17 +68,13 @@ def modify_rinex_observation_date(input_file, output_file, new_date_str):
 
     print(f"Modified file saved as: {output_file}")
 
+
 def zip_rinex_family_files(input_file):
     base_name = os.path.splitext(os.path.basename(input_file))[0]
     directory = os.path.dirname(os.path.abspath(input_file))
 
-    # Match files with the same base name and extension ending in .??O, .??N, or .??G
-    all_matches = glob.glob(os.path.join(directory, base_name + ".*"))
-
-    matching_files = [
-        f for f in all_matches
-        if len(os.path.splitext(f)[1]) == 4 and re.search("\.\d\d[GNO]", f) 
-    ]
+    matching_files = glob.glob(os.path.join(
+        directory, base_name + ".[0-9][0-9][G,N,O]"))
 
     if not matching_files:
         print("No matching RINEX files found to zip.")
@@ -108,6 +108,6 @@ def main():
     modify_rinex_observation_date(input_file, output_file, new_date_str)
     zip_rinex_family_files(input_file)
 
+
 if __name__ == "__main__":
     main()
-

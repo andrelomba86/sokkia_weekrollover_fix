@@ -14,13 +14,6 @@ class RinexFixer:
         # self.RINEX_DIR = rinex_dir
         self.SHIFT_WEEKS = 1024
 
-    def run_command(self, cmd: list, error_msg: str) -> bool:
-        try:
-            subprocess.run(cmd, check=True, capture_output=True, text=True)
-            return True
-        except subprocess.CalledProcessError as e:
-            return False
-
     def process_rinex_file(self, filepath) -> bool:
         filepath = Path(filepath)
         filename = filepath.name

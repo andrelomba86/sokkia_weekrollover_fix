@@ -7,10 +7,10 @@ class Observer:
             "The 'log' method must be implemented by the observer.")
 
     def debug(self, message):
-        return
+        pass
 
     def error(self, message):
-        return
+        pass
 
 
 class Logger:

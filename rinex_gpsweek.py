@@ -61,17 +61,3 @@ def calculate_gpsw_correction(rinex_file):
     shift = registration_week - obs_week
 
     return shift
-
-
-def calculate_year_gpsw_correction(year):
-    epoch = datetime(1980, 1, 6)  # GPS Epoch
-    date = datetime(year, 1, 1)
-
-    return 1024
-    week_number = (date - epoch).days // 7
-
-    if week_number > 1023:
-        correction = (week_number // 1024) * 1024
-        return correction
-    else:
-        return 0
