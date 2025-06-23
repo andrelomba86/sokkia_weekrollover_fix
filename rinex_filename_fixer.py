@@ -5,15 +5,10 @@ import subprocess
 from datetime import datetime, timedelta
 from bin.binary import get_gfzrnx_path
 from logger import logger
-import os
-import glob
+from pathlib import Path
 
 
 def format_date_from_rinex(date_str):
-    """
-    Converts a RINEX date string in the format 'YYYY MM DD hh mm ss.ssssss' to a datetime object.
-    Truncates or pads the fractional seconds to 6 digits if necessary.
-    """
     date_str_parts = date_str.strip().split()
     seconds = date_str_parts[-1]
 
@@ -69,8 +64,9 @@ def rename_rinex_files(old_filename, new_filename, dir_path):
         f"Renomeando arquivos para {new_filename}...")
     logger.debug(
         f"Old filenames: {old_filename} / New filenames: {new_filename}")
-    pattern = os.path.join(dir_path, f"{old_filename}.[0-9][0-9][G,N,O]")
-    rinex_files = glob.glob(pattern)
+    dir_path = Path(dir_path)
+    pattern = f"{old_filename}.[0-9][0-9][G,N,O]"
+    rinex_files = list(dir_path.glob(pattern))
     logger.debug(
         f"Files found to rename: {rinex_files} \n\t...in dir path: ${dir_path}")
     if not rinex_files:
@@ -79,25 +75,18 @@ def rename_rinex_files(old_filename, new_filename, dir_path):
 
     for old_file in rinex_files:
         try:
-            new_ext = os.path.splitext(old_file)[1]
-            new_filepath = os.path.join(dir_path, f"{new_filename}{new_ext}")
-            os.rename(old_file, new_filepath)
+            new_ext = old_file.suffix
+            new_filepath = dir_path / f"{new_filename}{new_ext}"
+            old_file.rename(new_filepath)
             logger.notify(
-                f"Arquivo renomeado: {os.path.basename(old_file)} -> {os.path.basename(new_filepath)}")
+                f"Arquivo renomeado: {old_file.name} -> {new_filepath.name}")
         except Exception as e:
             logger.error(e)
             logger.notify(
-                f"Erro ao renomear {os.path.basename(old_file)}: {e}")
+                f"Erro ao renomear {old_file.name}: {e}")
 
 
-# Variável global para station_id, pode ser definida externamente
-station_id = "SSTR"
-
-
-def rinex_filename_fixer(rinex_file, station_id_override=None):
-    """
-    Fix days from rinex file name
-    """
+def rinex_filename_fixer(rinex_file, station_id):
     try:
         logger.notify("Verificando se é necessário renomear os arquivos...")
         data = extract_gfzrnx_metadata(rinex_file)
@@ -113,16 +102,13 @@ def rinex_filename_fixer(rinex_file, station_id_override=None):
         logger.debug(
             f"Calculated date: {fixed_date} / day of the year: {day_of_year}")
 
-        # Usa station_id passado como argumento, senão usa o global
-        sid = station_id_override if station_id_override else station_id
-
-        old_filename = os.path.splitext(os.path.basename(rinex_file))[0]
-        new_filename = f"{sid}{day_of_year}0"
+        old_filename = Path(rinex_file).stem
+        new_filename = f"{station_id}{day_of_year}0"
 
         if (old_filename == new_filename):
             logger.notify("Os arquivos não serão renomeados")
             return new_filename
-        path = os.path.dirname(rinex_file)
+        path = str(Path(rinex_file).parent)
         rename_rinex_files(old_filename, new_filename, path)
 
         return new_filename
@@ -130,13 +116,3 @@ def rinex_filename_fixer(rinex_file, station_id_override=None):
         logger.notify(f"Erro ao corrigir o nome do arquivo RINEX: {e}")
         logger.error(e)
         return
-
-
-# def main():
-#     file = "./files/00062970.25O"
-#     # file = "./files/00451420.25O.ORIGINAL"
-#     rinex_filename_fixer(file)
-
-
-# if __name__ == "__main__":
-#     main()

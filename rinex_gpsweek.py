@@ -1,10 +1,4 @@
 #!/usr/bin/env python3
-
-"""
-Module for calculating GPS week corrections in RINEX files
-Provides functions to extract metadata and calculate GPS week shifts
-"""
-
 import json
 import subprocess
 from datetime import datetime, timedelta

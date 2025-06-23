@@ -24,13 +24,12 @@ class RinexFixer:
         try:
 
             shift = calculate_gpsw_correction(filepath)
-            logger.notify("\n")
-            logger.notify(f"Diferença de semanas calculada: {shift}")
+            logger.debug(f"Calculated weeh shift: {shift}")
 
             if Path(f"{filepath}.ORIGINAL").exists():
-                logger.notify("\n")
+                logger.notify("")
                 logger.notify(
-                    f"\nErro: Foi encontrado o arquivo \"{filepath}.ORIGINAL\"")
+                    f"Erro: Foi encontrado o arquivo \"{filepath}.ORIGINAL\"")
                 logger.notify(
                     "Verifique se o processo de correção já não foi realizado.\n")
                 return False
@@ -46,13 +45,12 @@ class RinexFixer:
                 log_file.write(e.stdout or "")
                 log_file.write(e.stderr or "")
                 log_file.close()
-                logger.notify("\n")
+                logger.notify("")
                 logger.notify(
                     f"Erro ao executar GFZRNX. Veja o log em {filepath}.gfzrnx.log")
                 return False
 
             filepath.rename(f"{filepath}.ORIGINAL")
-            logger.notify("\n")
             logger.notify(
                 f"Arquivo original renomeado para: {filename}.ORIGINAL")
 

@@ -195,7 +195,7 @@ class RinexGUI:
             station_id = self.station_id_var.get().strip() or "SSTR"
 
             fixed_filename = rinex_filename_fixer(
-                file_path, station_id_override=station_id)
+                file_path, station_id=station_id)
 
             if (not fixed_filename):
                 return
@@ -215,10 +215,7 @@ class RinexGUI:
             success = self.fixer.process_rinex_file(rinex_observation_file)
 
             if success:
-                logger.notify("\n")
                 logger.notify("Correção concluída com sucesso!")
-                # messagebox.showinfo(
-                #     "Sucesso", "Arquivo corrigido com sucesso!")
             else:
                 messagebox.showerror("Erro", "Erro ao corrigir o arquivo")
         except Exception as e:
@@ -247,12 +244,12 @@ class RinexGUI:
                 for file in rinex_files:
                     zipf.write(str(file), file.name)
             logger.notify(
-                f"\nArquivos comprimidos com sucesso em: {zip_filename}\n", tk.END)
-            logger.notify("Arquivos incluídos:\n", tk.END)
+                f"\nArquivos comprimidos com sucesso em: {zip_filename}", tk.END)
+            logger.notify("Arquivos incluídos:", tk.END)
             for file in rinex_files:
-                logger.notify(f"- {file.name}\n", tk.END)
-            messagebox.showinfo("Sucesso", "Arquivos comprimidos com sucesso!")
+                logger.notify(f"- {file.name}", tk.END)
         except Exception as e:
+            logger.error(e)
             messagebox.showerror(
                 "Erro", f"Erro ao comprimir arquivos: {str(e)}")
 

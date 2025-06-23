@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import sys
-from datetime import datetime
 import re
 import os
+import sys
 import glob
 import zipfile
+from datetime import datetime
 
 
 def modify_rinex_observation_date(input_file, output_file, new_date_str):
