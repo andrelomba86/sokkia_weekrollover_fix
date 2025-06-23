@@ -3,7 +3,6 @@ import os
 from bin.config import BINARY_CONFIG
 import platform
 
-
 def get_gfzrnx_path():
     """
     Returns the full path to the system-specific gfzrnx binary

@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/usr/bin/env python3
 
 """
 Module for calculating GPS week corrections in RINEX files
@@ -8,7 +8,7 @@ Provides functions to extract metadata and calculate GPS week shifts
 import json
 import subprocess
 from datetime import datetime, timedelta
-from utils.binary_manager import get_gfzrnx_path
+from bin.binary import get_gfzrnx_path
 
 
 def gps_week_from_date(date_str):
@@ -39,6 +39,8 @@ def extract_metadata_gfzrnx(rinex_file):
         command, capture_output=True, text=True, check=True)
     return json.loads(result.stdout)
 
+# TODO: APAGAR ESSA FUNÇÃO
+
 
 def calculate_gpsw_correction(rinex_file):
     """
@@ -58,13 +60,14 @@ def calculate_gpsw_correction(rinex_file):
 
     shift = registration_week - obs_week
 
-    return shift, data
+    return shift
 
 
 def calculate_year_gpsw_correction(year):
     epoch = datetime(1980, 1, 6)  # GPS Epoch
     date = datetime(year, 1, 1)
 
+    return 1024
     week_number = (date - epoch).days // 7
 
     if week_number > 1023:
