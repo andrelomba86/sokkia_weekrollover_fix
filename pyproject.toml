@@ -1,0 +1,21 @@
+[project]
+name = "sokkia_weekrollover_fix"
+version = "0.1.0"
+description = "Tool to fix week rollover in Sokkia files"
+authors = [
+    { name = "André Lomba", email = "andrelomba86@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.7"
+dependencies = [
+    "termcolor>=3.1"
+]
+
+
+[project.urls]
+Homepage = "https://github.com/andrelomba86/sokkia_weekrollover_fix"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
